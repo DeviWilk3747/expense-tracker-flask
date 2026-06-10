@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 
 # Create Flask application
 app = Flask(__name__)
@@ -6,7 +6,7 @@ app = Flask(__name__)
 # Home page route
 @app.route("/")
 def home():
-    return "Expense Tracker Flask Application"
+    return render_template("index.html")
 
 @app.route("/about")
 def about():
