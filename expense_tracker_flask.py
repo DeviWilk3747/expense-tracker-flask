@@ -34,31 +34,32 @@ def about():
     return "About Page"
 
 # Add expense page route
-@app.route("/add-expense", methods=["POST"])
+@app.route("/add-expense", methods=["GET", "POST"])
 def add_expense():
 
-    # Requests information from the webpage
-    expense_name = request.form["expense_name"]
-    cost = float(request.form["cost"])
+    if request.method == "POST":
 
-    print(f"Expense: {expense_name}")
-    print(f"Cost: {cost}")
-    # Adds the information to expense_tracker database
-    cursor.execute(
-    """
-    INSERT INTO expenses
-    (name, cost)
-    VALUES (?, ?)
-    """,
-    (expense_name, cost)
-    )
+        # Retrieve submitted form data
+        expense_name = request.form["expense_name"]
+        cost = float(request.form["cost"])
 
-    connection.commit()
-    cursor.execute("SELECT * FROM expenses")
-    
+        # Save the new expense to the database
+        cursor.execute(
+            """
+            INSERT INTO expenses
+            (name, cost)
+            VALUES (?, ?)
+            """,
+            (expense_name, cost)
+        )
 
-    # Redirects user to the home page
-    return redirect(url_for("home"))
+        connection.commit()
+
+        # After adding, send user to the view expenses page
+        return redirect(url_for("view_expenses"))
+
+    # If the user visits /add-expense normally, show the form
+    return render_template("add_expense.html")
 
 # View expenses page route
 @app.route("/view-expenses")
