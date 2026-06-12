@@ -66,11 +66,17 @@ def view_expenses():
 
     # Retrieve all expense records from the database
     cursor.execute("SELECT * FROM expenses")
-
-    # Store all returned rows
     expenses = cursor.fetchall()
 
-    return render_template("view_expenses.html", expenses=expenses)
+    # Calculaate total cost of all expenses
+    cursor.execute("SELECT SUM(cost) FROM expenses")
+    result = cursor.fetchone()
+
+    # If there are no expenses yet
+    total = result[0] if result[0] is not None else 0
+
+    # Send both the expense records and total spending to HTML
+    return render_template("view_expenses.html", expenses=expenses, total=total)
 
 # Delete expense route
 @app.route("/delete-expense/<int:expense_id>", methods=["POST"])
