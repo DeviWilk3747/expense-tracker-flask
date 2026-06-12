@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Expenses</title>
+</head>
+
+<body>
+    <h1>All Expenses</h1>
+
+    {% for expense in expenses %}
+        <P>
+            ID: {{ expense [0] }} |
+            Name: {{ expense[1] }} |
+            Cost: {{ expense[2] }}
+        </P>
+    {% endfor %}
+
+    <br>
+
+    <a href="/">Back to Home</a>
+
+</body>
+
+</html>
