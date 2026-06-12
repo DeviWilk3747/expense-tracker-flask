@@ -60,6 +60,7 @@ def add_expense():
     # Redirects user to the home page
     return redirect(url_for("home"))
 
+# View expenses page route
 @app.route("/view-expenses")
 def view_expenses():
 
@@ -70,6 +71,22 @@ def view_expenses():
     expenses = cursor.fetchall()
 
     return render_template("view_expenses.html", expenses=expenses)
+
+# Delete expense route
+@app.route("/delete-expense/<int:expense_id>", methods=["POST"])
+def delete_expense(expense_id):
+
+    # Deletes expense
+    cursor.execute(
+        """
+        DELETE FROM expenses 
+        WHERE id = ?
+        """,
+        (expense_id,)
+        )
+
+    connection.commit()
+    return redirect(url_for("view_expenses"))
 
 # Run Flask server
 if __name__ == "__main__":

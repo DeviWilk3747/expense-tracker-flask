@@ -8,11 +8,15 @@
     <h1>All Expenses</h1>
 
     {% for expense in expenses %}
-        <P>
+        <p>
             ID: {{ expense [0] }} |
             Name: {{ expense[1] }} |
             Cost: {{ expense[2] }}
-        </P>
+        </p>
+
+        <form action="/delete-expense/{{ expense[0] }}" method="POST">
+            <button type="submit">Delete</button>
+        </form>
     {% endfor %}
 
     <br>
