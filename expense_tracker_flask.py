@@ -95,6 +95,28 @@ def delete_expense(expense_id):
     connection.commit()
     return redirect(url_for("view_expenses"))
 
+# Edit expense page route
+@app.route("/edit-expense/<int:expense_id>")
+def edit_expense(expense_id):
+
+    # Retrieve the expense that matches the select ID
+    cursor.execute(
+        """
+        SELECT * FROM expenses
+        WHERE id = ?
+        """,
+        (expense_id,)
+    )
+
+    expense = cursor.fetchone()
+
+    # Handles an ID that does not exist
+    if expense is None:
+        return "Expense not found", 404
+    
+    # Send the selected expense to the edit form
+    return render_template("edit_expense.html", expense=expense)
+
 # Run Flask server
 if __name__ == "__main__":
     app.run(debug=True)

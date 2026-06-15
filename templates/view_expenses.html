@@ -14,6 +14,8 @@
             Cost: {{ expense[2] }}
         </p>
 
+        <a href="/edit-expense/{{ expense[0] }}">Edit</a>
+
         <form action="/delete-expense/{{ expense[0] }}" method="POST">
             <button type="submit">Delete</button>
         </form>
