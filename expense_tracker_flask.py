@@ -12,8 +12,8 @@ def create_table():
     CREATE TABLE If NOT EXISTS expenses(
         id INTEGER PRIMARY KEY,
         name TEXT,
-        cost REAL
-        
+        cost REAL,
+        category TEXT
         )
     """)
     connection.commit()
@@ -42,15 +42,16 @@ def add_expense():
         # Retrieve submitted form data
         expense_name = request.form["expense_name"]
         cost = float(request.form["cost"])
+        category = request.form["category"]
 
         # Save the new expense to the database
         cursor.execute(
             """
             INSERT INTO expenses
-            (name, cost)
-            VALUES (?, ?)
+            (name, cost, category)
+            VALUES (?, ?, ?)
             """,
-            (expense_name, cost)
+            (expense_name, cost, category)
         )
 
         connection.commit()
@@ -103,16 +104,18 @@ def edit_expense(expense_id):
     if request.method == "POST":
             expense_name = request.form["expense_name"]
             cost = float(request.form["cost"])
+            category = request.form["category"]
 
             cursor.execute(
                 """
                 UPDATE expenses
                 SET 
                     name = ?,
-                    cost = ?
+                    cost = ?,
+                    category = ?
                 WHERE id = ?
                 """,
-                (expense_name, cost, expense_id)
+                (expense_name, cost, category, expense_id)
             )
 
             connection.commit()
