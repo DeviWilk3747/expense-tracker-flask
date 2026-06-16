@@ -96,10 +96,30 @@ def delete_expense(expense_id):
     return redirect(url_for("view_expenses"))
 
 # Edit expense page route
-@app.route("/edit-expense/<int:expense_id>")
+@app.route("/edit-expense/<int:expense_id>", methods=["GET", "POST"])
 def edit_expense(expense_id):
 
-    # Retrieve the expense that matches the select ID
+    # Handle the submitted edit form
+    if request.method == "POST":
+            expense_name = request.form["expense_name"]
+            cost = float(request.form["cost"])
+
+            cursor.execute(
+                """
+                UPDATE expenses
+                SET 
+                    name = ?,
+                    cost = ?
+                WHERE id = ?
+                """,
+                (expense_name, cost, expense_id)
+            )
+
+            connection.commit()
+
+            return redirect(url_for("view_expenses"))
+    
+    # A GET request retrieves the current expense for the form
     cursor.execute(
         """
         SELECT * FROM expenses
@@ -109,6 +129,7 @@ def edit_expense(expense_id):
     )
 
     expense = cursor.fetchone()
+    
 
     # Handles an ID that does not exist
     if expense is None:
