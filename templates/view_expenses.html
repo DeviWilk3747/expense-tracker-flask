@@ -7,6 +7,17 @@
 <body>
     <h1>All Expenses</h1>
 
+    <h2>Filter Expenses</h2>
+
+    <form action="view-expenses" method="GET">
+        <label>Category:</label>
+        <input type="text" name="category">
+
+        <button type="submit">Filter</button>
+    </form>
+    
+    <br>
+
     {% for expense in expenses %}
         <p>
             ID: {{ expense [0] }} |

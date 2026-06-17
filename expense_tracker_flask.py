@@ -66,12 +66,38 @@ def add_expense():
 @app.route("/view-expenses")
 def view_expenses():
 
-    # Retrieve all expense records from the database
-    cursor.execute("SELECT * FROM expenses")
+    category = request.args.get("category")
+
+    if category:
+
+        # Displays expenses based on category entered
+        cursor.execute(
+            """
+            SELECT * FROM expenses
+            WHERE category = ?
+            """,
+            (category,)
+        )
+    else:
+        
+        # Displaays all expenses from the database
+        cursor.execute("SELECT * FROM expenses")
+
     expenses = cursor.fetchall()
 
-    # Calculaate total cost of all expenses
-    cursor.execute("SELECT SUM(cost) FROM expenses")
+    if category:
+         # Calculates total expenses from inserted category
+         cursor.execute(
+            """
+            SELECT SUM(cost) FROM expenses
+            WHERE category = ?
+            """,
+            (category,)
+         )
+    else:
+        # Calculates total cost of all expenses
+        cursor.execute("SELECT SUM(cost) FROM expenses")
+  
     result = cursor.fetchone()
 
     # If there are no expenses yet
