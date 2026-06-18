@@ -19,10 +19,23 @@
     <br>
 
     <form action="/view-expenses" method="GET">
-        <label>Search</label>
+        <label>Expense Name:</label>
         <input type="text" name="search">
 
         <button type="submit">Search</button>
+    </form>
+
+    <h2>Sort Expenses</h2>
+    
+    <form action="/view-expenses" method="GET">
+        <label>Sort by cost:</label>
+
+        <select name="sort">
+            <option value="cost_asc">Lowest to Highest</option>
+            <option value="cost_desc">Highest to Lowest</option>
+        </select>
+
+        <button type="submit">Sort</button>
     </form>
 
     <br>

@@ -68,6 +68,7 @@ def view_expenses():
 
     category = request.args.get("category")
     search = request.args.get("search")
+    sort = request.args.get("sort")
 
     if category:
 
@@ -89,6 +90,23 @@ def view_expenses():
             """,
             (f"%{search}%",)
         )
+
+    elif sort == "cost_asc":
+        # Sort lowest to highest
+        cursor.execute(
+            """
+            SELECT * FROM expenses
+            ORDER BY cost ASC
+            """
+        )
+    
+    elif sort == "cost_desc":
+            cursor.execute(
+                """
+            SELECT * FROM expenses
+            ORDER BY cost DESC"""
+        )
+
     else:
         
         # Displaays all expenses from the database
