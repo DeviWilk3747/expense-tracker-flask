@@ -67,6 +67,7 @@ def add_expense():
 def view_expenses():
 
     category = request.args.get("category")
+    search = request.args.get("search")
 
     if category:
 
@@ -77,6 +78,16 @@ def view_expenses():
             WHERE category = ?
             """,
             (category,)
+        )
+    
+    elif search:
+        # Searches and displays the expense entered
+        cursor.execute(
+            """
+            SELECT * FROM expenses
+            WHERE name LIKE ?
+            """,
+            (f"%{search}%",)
         )
     else:
         
@@ -94,6 +105,16 @@ def view_expenses():
             """,
             (category,)
          )
+
+    elif search:
+        # Calculate total expenses from search
+        cursor.execute(
+            """
+            SELECT SUM (cost) FROM expenses
+            WHERE name LIKE ?
+            """,
+            (f"%{search}%",)
+        )
     else:
         # Calculates total cost of all expenses
         cursor.execute("SELECT SUM(cost) FROM expenses")
