@@ -13,9 +13,26 @@ def create_table():
         id INTEGER PRIMARY KEY,
         name TEXT,
         cost REAL,
-        category TEXT
+        category TEXT,
+        date TEXT
         )
     """)
+
+    # Retrieve information about the existing table columns
+    cursor.execute("PRAGMA table_info(expenses)")
+    columns = cursor.fetchall()
+
+    # Extract only the column names
+    column_names = [column[1] for column in columns]
+
+    # Update older databases that do not have the date column
+    if "date" not in column_names:
+        cursor.execute(
+            """
+            ALTER TABLE expenses
+            ADD COLUMN date TEXT
+            """
+        )
     connection.commit()
 
 create_table() 
@@ -45,9 +62,10 @@ def add_expense():
         expense_name = request.form.get("expense_name", "").strip()
         cost_input= request.form.get("cost", "").strip()
         category = request.form.get("category", "").strip()
+        date = request.form.get("date", "").strip()
 
         # Stop if any field is empty 
-        if not expense_name or not cost_input or not category:
+        if not expense_name or not cost_input or not category or not date:
             return render_template(
                 "add_expense.html",
                 error="All fields required."
@@ -73,10 +91,10 @@ def add_expense():
         cursor.execute(
             """
             INSERT INTO expenses
-            (name, cost, category)
-            VALUES (?, ?, ?)
+            (name, cost, category, date)
+            VALUES (?, ?, ?, ?)
             """,
-            (expense_name, cost, category)
+            (expense_name, cost, category, date)
         )
 
         connection.commit()
@@ -128,15 +146,17 @@ def view_expenses():
         )
     
     elif sort == "cost_desc":
-            cursor.execute(
-                """
+        # Sort highest to lowest
+        cursor.execute(
+            """
             SELECT * FROM expenses
-            ORDER BY cost DESC"""
+            ORDER BY cost DESC
+            """
         )
 
     else:
         
-        # Displaays all expenses from the database
+        # Displays all expenses from the database
         cursor.execute("SELECT * FROM expenses")
 
     expenses = cursor.fetchall()
@@ -188,7 +208,7 @@ def delete_expense(expense_id):
     connection.commit()
 
     flash("Expense deleted successfully.")
-    
+
     return redirect(url_for("view_expenses"))
 
 # Edit expense page route
@@ -199,15 +219,16 @@ def edit_expense(expense_id):
     if request.method == "POST":
         # Retrieve submitted form data
         expense_name = request.form.get("expense_name", "").strip()
-        cost_input= request.form.get("cost", "").strip()
+        cost_input = request.form.get("cost", "").strip()
         category = request.form.get("category", "").strip()
+        date = request.form.get("date", "").strip()
 
         # Stop if any field is empty 
-        if not expense_name or not cost_input or not category:
+        if not expense_name or not cost_input or not category or not date:
             return render_template(
                 "edit_expense.html",
                 error="All fields required.",
-                expense=(expense_id, expense_name, cost_input, category)
+                expense=(expense_id, expense_name, cost_input, category, date)
             )
 
         # Safely convert the cost from text to a decimal number
@@ -217,7 +238,7 @@ def edit_expense(expense_id):
             return render_template(
                 "edit_expense.html",
                 error="Cost must be a valid number.",
-                expense=(expense_id, expense_id, cost_input, category)
+                expense=(expense_id, expense_name, cost_input, category, date)
                 )
         
         # Check that cost is positive
@@ -225,7 +246,7 @@ def edit_expense(expense_id):
             return render_template(
                 "edit_expense.html",
                 error="Cost must be greater than zero.",
-                expense=(expense_id, expense_id, cost_input, category)
+                expense=(expense_id, expense_name, cost_input, category, date)
                 )
 
         cursor.execute(
@@ -234,10 +255,11 @@ def edit_expense(expense_id):
             SET 
                 name = ?,
                 cost = ?,
-                category = ?
+                category = ?,
+                date = ?
             WHERE id = ?
             """,
-            (expense_name, cost, category, expense_id)
+            (expense_name, cost, category, date, expense_id)
         )
 
         connection.commit()

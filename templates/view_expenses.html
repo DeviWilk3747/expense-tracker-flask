@@ -50,10 +50,11 @@
 
     {% for expense in expenses %}
         <p>
-            ID: {{ expense [0] }} |
+            ID: {{ expense[0] }} |
             Name: {{ expense[1] }} |
             Cost: ${{ "%.2f"|format(expense[2]) }} |
-            Category: {{ expense[3] }}
+            Category: {{ expense[3] }} |
+            Date: {{ expense[4] }}
         </p>
 
         <a href="/edit-expense/{{ expense[0] }}">Edit</a>
