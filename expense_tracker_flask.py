@@ -46,17 +46,26 @@ def add_expense():
 
         # Stop if any field is empty 
         if not expense_name or not cost_input or not category:
-            return " All fields are required."
+            return render_template(
+                "add_expense.html",
+                error="All fields required."
+            )
 
         # Safely convert the cost from text to a decimal number
         try:
             cost = float(cost_input)
         except ValueError:
-            return "Cost must be a valid number."
+            return render_template(
+                "add_expense.html", 
+                error="Cost must be a valid number."
+            )
         
         # Check that cost is positive
         if cost <= 0:
-            return "Cost must be greater than zero."
+            return render_template(
+                "add_expense.html",
+                error="Cost must be greater than zero."
+                )
         
         # Save the new expense to the database
         cursor.execute(
@@ -188,17 +197,29 @@ def edit_expense(expense_id):
 
         # Stop if any field is empty 
         if not expense_name or not cost_input or not category:
-            return " All fields are required."
+            return render_template(
+                "edit_expense.html",
+                error="All fields required.",
+                expense=(expense_id, expense_name, cost_input, category)
+            )
 
         # Safely convert the cost from text to a decimal number
         try:
             cost = float(cost_input)
         except ValueError:
-            return "Cost must be a valid number."
+            return render_template(
+                "edit_expense.html",
+                error="Cost must be a valid number.",
+                expense=(expense_id, expense_id, cost_input, category)
+                )
         
         # Check that cost is positive
         if cost <= 0:
-            return "Cost must be greater than zero."
+            return render_template(
+                "edit_expense.html",
+                error="Cost must be greater than zero.",
+                expense=(expense_id, expense_id, cost_input, category)
+                )
 
         cursor.execute(
             """
