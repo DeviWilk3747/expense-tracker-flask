@@ -40,10 +40,24 @@ def add_expense():
     if request.method == "POST":
 
         # Retrieve submitted form data
-        expense_name = request.form["expense_name"]
-        cost = float(request.form["cost"])
-        category = request.form["category"]
+        expense_name = request.form.get("expense_name", "").strip()
+        cost_input= request.form.get("cost", "").strip()
+        category = request.form.get("category", "").strip()
 
+        # Stop if any field is empty 
+        if not expense_name or not cost_input or not category:
+            return " All fields are required."
+
+        # Safely convert the cost from text to a decimal number
+        try:
+            cost = float(cost_input)
+        except ValueError:
+            return "Cost must be a valid number."
+        
+        # Check that cost is positive
+        if cost <= 0:
+            return "Cost must be greater than zero."
+        
         # Save the new expense to the database
         cursor.execute(
             """
@@ -167,25 +181,40 @@ def edit_expense(expense_id):
 
     # Handle the submitted edit form
     if request.method == "POST":
-            expense_name = request.form["expense_name"]
-            cost = float(request.form["cost"])
-            category = request.form["category"]
+        # Retrieve submitted form data
+        expense_name = request.form.get("expense_name", "").strip()
+        cost_input= request.form.get("cost", "").strip()
+        category = request.form.get("category", "").strip()
 
-            cursor.execute(
-                """
-                UPDATE expenses
-                SET 
-                    name = ?,
-                    cost = ?,
-                    category = ?
-                WHERE id = ?
-                """,
-                (expense_name, cost, category, expense_id)
-            )
+        # Stop if any field is empty 
+        if not expense_name or not cost_input or not category:
+            return " All fields are required."
 
-            connection.commit()
+        # Safely convert the cost from text to a decimal number
+        try:
+            cost = float(cost_input)
+        except ValueError:
+            return "Cost must be a valid number."
+        
+        # Check that cost is positive
+        if cost <= 0:
+            return "Cost must be greater than zero."
 
-            return redirect(url_for("view_expenses"))
+        cursor.execute(
+            """
+            UPDATE expenses
+            SET 
+                name = ?,
+                cost = ?,
+                category = ?
+            WHERE id = ?
+            """,
+            (expense_name, cost, category, expense_id)
+        )
+
+        connection.commit()
+
+        return redirect(url_for("view_expenses"))
     
     # A GET request retrieves the current expense for the form
     cursor.execute(
