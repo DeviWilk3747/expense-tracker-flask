@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for 
+from flask import Flask, render_template, request, redirect, url_for, flash 
 import sqlite3
 
 connection = sqlite3.connect("expense_tracker.db", check_same_thread=False)
@@ -22,6 +22,8 @@ create_table()
 
 # Create Flask application
 app = Flask(__name__)
+
+app.secret_key = "expense-tracker-secret-key"
 
 # Home page route
 @app.route("/")
@@ -78,6 +80,8 @@ def add_expense():
         )
 
         connection.commit()
+
+        flash("Expense added successfully.")
 
         # After adding, send user to the view expenses page
         return redirect(url_for("view_expenses"))
@@ -182,6 +186,9 @@ def delete_expense(expense_id):
         )
 
     connection.commit()
+
+    flash("Expense deleted successfully.")
+    
     return redirect(url_for("view_expenses"))
 
 # Edit expense page route
@@ -234,6 +241,8 @@ def edit_expense(expense_id):
         )
 
         connection.commit()
+
+        flash("Expense updated successfully.")
 
         return redirect(url_for("view_expenses"))
     

@@ -7,6 +7,14 @@
 <body>
     <h1>All Expenses</h1>
 
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
     <h2>Filter Expenses</h2>
 
     <form action="/view-expenses" method="GET">
