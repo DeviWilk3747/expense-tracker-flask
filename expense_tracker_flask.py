@@ -154,6 +154,26 @@ def view_expenses():
             """
         )
 
+    elif sort == "date_asc":
+
+        # Sort oldest to newest
+        cursor.execute(
+            """
+            SELECT * FROM expenses
+            ORDER BY date ASC
+            """
+        )
+    
+    elif sort == "date_desc":
+
+        # Sort newest to oldest
+        cursor.execute(
+            """
+            SELECT * FROM expenses
+            ORDER BY date DESC
+            """
+        )
+
     else:
         
         # Displays all expenses from the database

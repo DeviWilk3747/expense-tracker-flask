@@ -36,11 +36,13 @@
     <h2>Sort Expenses</h2>
 
     <form action="/view-expenses" method="GET">
-        <label>Sort by cost:</label>
+        <label>Sort expenses:</label>
 
         <select name="sort">
             <option value="cost_asc">Lowest to Highest</option>
             <option value="cost_desc">Highest to Lowest</option>
+            <option value="date_asc">Oldest to Newest</option>
+            <option value="date_desc">Newest to Oldest</option>
         </select>
 
         <button type="submit">Sort</button>
@@ -58,6 +60,8 @@
         </p>
 
         <a href="/edit-expense/{{ expense[0] }}">Edit</a>
+
+        <br><br>
 
         <form action="/delete-expense/{{ expense[0] }}" method="POST">
             <button type="submit">Delete</button>
