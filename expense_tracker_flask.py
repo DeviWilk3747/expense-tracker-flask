@@ -121,9 +121,9 @@ def view_expenses():
         cursor.execute(
             """
             SELECT * FROM expenses
-            WHERE category = ?
+            WHERE category LIKE ?
             """,
-            (category,)
+            (f"%{category}%",)
         )
     
     elif search:
@@ -186,10 +186,10 @@ def view_expenses():
          cursor.execute(
             """
             SELECT SUM(cost) FROM expenses
-            WHERE category = ?
+            WHERE category LIKE ?
             """,
-            (category,)
-         )
+            (f"%{category}%",)
+        )
 
     elif search:
         # Calculate total expenses from search
@@ -209,8 +209,19 @@ def view_expenses():
     # If there are no expenses yet
     total = result[0] if result[0] is not None else 0
 
+    # Calculate total spending for each category
+    cursor.execute(
+        """
+        SELECT category, SUM(cost)
+        FROM expenses
+        GROUP BY category
+        """
+    )
+
+    category_totals = cursor.fetchall()
+
     # Send both the expense records and total spending to HTML
-    return render_template("view_expenses.html", expenses=expenses, total=total)
+    return render_template("view_expenses.html", expenses=expenses, total=total, category_totals=category_totals)
 
 # Delete expense route
 @app.route("/delete-expense/<int:expense_id>", methods=["POST"])

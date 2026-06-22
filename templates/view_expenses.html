@@ -71,8 +71,21 @@
     <h2>Total Spending: ${{ "%.2f"|format(total) }}</h2>
 
     <br>
+    <h2>Spending by Category</h2>
+
+    {% for category_total in category_totals %}
+        <p>
+            Total spending for {{ category_total[0] }}:
+            ${{ "%.2f"|format(category_total[1]) }}
+        </p>
+    {% endfor %}
+    <br>
 
     <a href="/">Back to Home</a>
+
+    <br><br>
+
+    <a href="/view-expenses">Back to View Expenses</a>
 
 </body>
 
