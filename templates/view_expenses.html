@@ -81,6 +81,17 @@
     {% endfor %}
     <br>
 
+    <h2> Spending by Month</h2>
+
+    {% for monthly_total in monthly_totals %}
+        <p>
+            Total monthly spending for {{ monthly_total[0] }}: 
+            ${{ "%.2f"|format(monthly_total[1]) }}
+        </p>
+
+    {% endfor %}
+    <br>
+
     <a href="/">Back to Home</a>
 
     <br><br>

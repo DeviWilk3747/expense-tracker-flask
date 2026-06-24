@@ -220,8 +220,23 @@ def view_expenses():
 
     category_totals = cursor.fetchall()
 
+    # Calculate total spending for each month
+    cursor.execute(
+        """
+        SELECT strftime('%Y-%m', date), SUM(cost)
+        FROM expenses
+        WHERE date IS NOT NULL AND date != ''
+        GROUP BY strftime('%Y-%m', date)
+        ORDER BY strftime('%Y-%m', date) ASC
+        """
+    )
+
+    monthly_totals = cursor.fetchall()
+
+    
+
     # Send both the expense records and total spending to HTML
-    return render_template("view_expenses.html", expenses=expenses, total=total, category_totals=category_totals)
+    return render_template("view_expenses.html", expenses=expenses, total=total, category_totals=category_totals, monthly_totals=monthly_totals)
 
 # Delete expense route
 @app.route("/delete-expense/<int:expense_id>", methods=["POST"])
