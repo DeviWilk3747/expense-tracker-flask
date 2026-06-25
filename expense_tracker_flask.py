@@ -60,7 +60,7 @@ def add_expense():
 
         # Retrieve submitted form data
         expense_name = request.form.get("expense_name", "").strip()
-        cost_input= request.form.get("cost", "").strip()
+        cost_input = request.form.get("cost", "").strip()
         category = request.form.get("category", "").strip()
         date = request.form.get("date", "").strip()
 
@@ -111,114 +111,67 @@ def add_expense():
 @app.route("/view-expenses")
 def view_expenses():
 
-    category = request.args.get("category")
-    search = request.args.get("search")
-    sort = request.args.get("sort")
-    month = request.args.get("month")
+    # URL values
+    category = request.args.get("category", "").strip()
+    search = request.args.get("search", "").strip()
+    sort = request.args.get("sort", "").strip()
+    month = request.args.get("month", "").strip()
+
+    # Start buidling the SQL query
+    query = "SELECT * FROM expenses"
+    conditions = []
+    parameters = []
 
     if category:
-
         # Displays expenses based on category entered
-        cursor.execute(
-            """
-            SELECT * FROM expenses
-            WHERE category LIKE ?
-            """,
-            (f"%{category}%",)
-        )
+        conditions.append("category LIKE ?")
+        parameters.append(f"%{category}%")
     
-    elif search:
+    if search:
         # Searches and displays the expense entered
-        cursor.execute(
-            """
-            SELECT * FROM expenses
-            WHERE name LIKE ?
-            """,
-            (f"%{search}%",)
-        )
+        conditions.append("name LIKE ?")
+        parameters.append(f"%{search}%")
 
-    elif sort == "cost_asc":
-        # Sort lowest to highest
-        cursor.execute(
-            """
-            SELECT * FROM expenses
-            ORDER BY cost ASC
-            """
-        )
+    if month:
+        # Filters expenses by month
+        conditions.append("strftime('%Y-%m', date) = ?")
+        parameters.append(month)
     
+    # Add all active filters to the query
+    if conditions:
+        query += " WHERE " + " AND ".join(conditions)
+
+    if sort == "cost_asc":
+        # Sort lowest to highest
+        query += " ORDER BY cost ASC"
+
     elif sort == "cost_desc":
         # Sort highest to lowest
-        cursor.execute(
-            """
-            SELECT * FROM expenses
-            ORDER BY cost DESC
-            """
-        )
+        query += " ORDER BY cost DESC"
 
     elif sort == "date_asc":
-
         # Sort oldest to newest
-        cursor.execute(
-            """
-            SELECT * FROM expenses
-            ORDER BY date ASC
-            """
-        )
+        query += " ORDER BY date ASC"
     
     elif sort == "date_desc":
-
         # Sort newest to oldest
-        cursor.execute(
-            """
-            SELECT * FROM expenses
-            ORDER BY date DESC
-            """
-        )
+        query += " ORDER BY date DESC"
 
-    elif month:
-
-        # Filters expenses by month
-        cursor.execute(
-            """
-            SELECT * FROM expenses
-            WHERE strftime('%Y-%m', date) = ?
-            """,
-            (month,)
-        )
-
-    else:
-        
-        # Displays all expenses from the database
-        cursor.execute("SELECT * FROM expenses")
-
+    # Execute the completed query once
+    cursor.execute(query, parameters)
     expenses = cursor.fetchall()
 
-    if category:
-         # Calculates total expenses from inserted category
-         cursor.execute(
-            """
-            SELECT SUM(cost) FROM expenses
-            WHERE category LIKE ?
-            """,
-            (f"%{category}%",)
-        )
+    # Start a seperate query to total the currently displayed expenses
+    total_query = "SELECT SUM(cost) FROM expenses"
 
-    elif search:
-        # Calculate total expenses from search
-        cursor.execute(
-            """
-            SELECT SUM (cost) FROM expenses
-            WHERE name LIKE ?
-            """,
-            (f"%{search}%",)
-        )
-    else:
-        # Calculates total cost of all expenses
-        cursor.execute("SELECT SUM(cost) FROM expenses")
-  
+    # Apply the same filters used by the expense list
+    if conditions:
+        total_query += " WHERE " + " AND ".join(conditions)
+
+    cursor.execute(total_query, parameters)
     result = cursor.fetchone()
 
-    # If there are no expenses yet
+    # Display zero when no matching expenses exist
     total = result[0] if result[0] is not None else 0
 
     # Calculate total spending for each category
