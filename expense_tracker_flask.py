@@ -114,6 +114,7 @@ def view_expenses():
     category = request.args.get("category")
     search = request.args.get("search")
     sort = request.args.get("sort")
+    month = request.args.get("month")
 
     if category:
 
@@ -172,6 +173,17 @@ def view_expenses():
             SELECT * FROM expenses
             ORDER BY date DESC
             """
+        )
+
+    elif month:
+
+        # Filters expenses by month
+        cursor.execute(
+            """
+            SELECT * FROM expenses
+            WHERE strftime('%Y-%m', date) = ?
+            """,
+            (month,)
         )
 
     else:
