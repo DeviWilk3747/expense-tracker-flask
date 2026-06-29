@@ -2,105 +2,136 @@
 <html>
 <head>
     <title>View Expenses</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 
 <body>
-    <h1>All Expenses</h1>
-
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-                <p>{{ message }}</p>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-
-    <h2>Filter Expenses</h2>
-
-    <form action="/view-expenses" method="GET">
-        <label>Category:</label>
-        <input type="text" name="category">
-
-        <br><br>
-
-        <label>Expense Name:</label>
-        <input type="text" name="search">
-
-        <br><br>
-
-        <label>Month:</label>
-        <input type="month" name="month">
-
-        <br><br>
-
-        <label>Sort expenses:</label>
-        <select name="sort">
-            <option value="">No sorting</option>
-            <option value="cost_asc">Lowest to Highest</option>
-            <option value="cost_desc">Highest to Lowest</option>
-            <option value="date_asc">Oldest to Newest</option>
-            <option value="date_desc">Newest to Oldest</option>
-        </select>
-
-        <br><br>
-
-        <button type="submit">Apply</button>
-    </form>
-
-    <br>
-
-    <a href="/view-expenses">Clear Filters</a>
-
-    <br>
-
-    {% for expense in expenses %}
-        <p>
-            ID: {{ expense[0] }} |
-            Name: {{ expense[1] }} |
-            Cost: ${{ "%.2f"|format(expense[2]) }} |
-            Category: {{ expense[3] }} |
-            Date: {{ expense[4] }}
-        </p>
-
-        <a href="/edit-expense/{{ expense[0] }}">Edit</a>
-
-        <br><br>
-
-        <form action="/delete-expense/{{ expense[0] }}" method="POST">
-            <button type="submit">Delete</button>
-        </form>
-    {% endfor %}
     
-    <h2>Total Spending: ${{ "%.2f"|format(total) }}</h2>
+    <main class="container">
+        <h1>All Expenses</h1>
 
-    <br>
-    <h2>Spending by Category</h2>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
 
-    {% for category_total in category_totals %}
-        <p>
-            Total spending for {{ category_total[0] }}:
-            ${{ "%.2f"|format(category_total[1]) }}
-        </p>
-    {% endfor %}
-    <br>
+        <h2>Filter Expenses</h2>
 
-    <h2> Spending by Month</h2>
+        <form action="/view-expenses" method="GET">
+            <label>Category:</label>
+            <input type="text" name="category" value="{{ category }}">
 
-    {% for monthly_total in monthly_totals %}
-        <p>
-            Total monthly spending for {{ monthly_total[0] }}: 
-            ${{ "%.2f"|format(monthly_total[1]) }}
-        </p>
+            <br><br>
 
-    {% endfor %}
-    <br>
+            <label>Expense Name:</label>
+            <input type="text" name="search" value="{{ search }}">
 
-    <a href="/">Back to Home</a>
+            <br><br>
 
-    <br><br>
+            <label>Month:</label>
+            <input type="month" name="month" value=" {{ month }}">
 
-    <a href="/view-expenses">Back to View Expenses</a>
+            <br><br>
 
+            <label>Sort expenses:</label>
+            <select name="sort">
+                <option value="">No sorting</option>
+
+                <option value="cost_asc"
+                    {% if sort == "cost_asc" %}selected{% endif %}>
+                    Lowest to Highest
+                </option>
+
+                <option value="cost_desc"
+                    {% if sort == "cost_desc" %}selected{% endif %}>
+                    Highest to Lowest
+                </option>
+
+                <option value="date_asc"
+                {% if sort == "date_asc" %}selected{% endif %}>
+                Oldest to Newest
+                </option>
+
+                <option value="date_desc"
+                    {% if sort == "cost_desc"%}selected{% endif %}>
+                    Newest to Oldest
+                </option>
+            </select>
+
+            <br><br>
+
+            <button type="submit">Apply</button>
+        </form>
+
+        <br>
+
+        <a href="/view-expenses">Clear Filters</a>
+
+        <br>
+
+        {% if expenses %}
+            {% for expense in expenses %}
+                <p>
+                    ID: {{ expense[0] }} |
+                    Name: {{ expense[1] }} |
+                    Cost: ${{ "%.2f"|format(expense[2]) }} |
+                    Category: {{ expense[3] }} |
+                    Date: {{ expense[4] }}
+                </p>
+
+                <a href="/edit-expense/{{ expense[0] }}">Edit</a>
+
+                <br><br>
+
+                <form action="/delete-expense/{{ expense[0] }}" method="POST"
+                    action="/delete-expense/{{ expense[0] }}"
+                    method="POST"
+                    onsubmit="return confirm('Are you sure you want to delete this expense?');"
+                    >
+
+                    <button type="submit">Delete</button>
+                </form>
+            {% endfor %}
+        {% else %}
+                <p>No expenses found.</p>
+        
+        {% endif %}
+        
+        <h2>Total Spending: ${{ "%.2f"|format(total) }}</h2>
+
+        <br>
+        <h2>Spending by Category</h2>
+
+        {% for category_total in category_totals %}
+            <p>
+                Total spending for {{ category_total[0] }}:
+                ${{ "%.2f"|format(category_total[1]) }}
+            </p>
+        {% endfor %}
+        <br>
+
+        <h2> Spending by Month</h2>
+
+        {% for monthly_total in monthly_totals %}
+            <p>
+                Total monthly spending for {{ monthly_total[0] }}: 
+                ${{ "%.2f"|format(monthly_total[1]) }}
+            </p>
+
+        {% endfor %}
+        <br>
+
+        <a href="/">Back to Home</a>
+
+        <br><br>
+
+        <a href="/view-expenses">Back to View Expenses</a>
+
+    </main>
 </body>
 
 </html>

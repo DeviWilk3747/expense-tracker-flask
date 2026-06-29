@@ -201,7 +201,17 @@ def view_expenses():
     
 
     # Send both the expense records and total spending to HTML
-    return render_template("view_expenses.html", expenses=expenses, total=total, category_totals=category_totals, monthly_totals=monthly_totals)
+    return render_template(
+        "view_expenses.html", 
+        expenses=expenses, 
+        total=total, 
+        category_totals=category_totals, 
+        monthly_totals=monthly_totals,
+        category=category,
+        search=search,
+        month=month,
+        sort=sort
+    )
 
 # Delete expense route
 @app.route("/delete-expense/<int:expense_id>", methods=["POST"])

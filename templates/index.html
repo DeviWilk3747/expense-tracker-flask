@@ -2,22 +2,26 @@
 <html>
 <head>
     <title>Expense Tracker</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 
 <body>
+    <main class="container">
+        <h1>Expense Tracker</h1>
 
-    <h1>Expense Tracker</h1>
+        <p>Welcome to my Flask Expense Tracker Application.</p>
 
-    <p>Welcome to my Flask Expense Tracker Application.</p>
+        <div class="home-actions">
 
-    <a href="/add-expense">Add Expense</a>
-    <br><br>
+            <a href="/add-expense" class="nav-link">Add Expense</a>
 
-    <a href="/view-expenses">View Expenses</a>
-    <br><br>
+            <a href="/view-expenses" class="nav-link">View Expenses</a>
 
-    <a href="/about">About</a>
+            <a href="/about" class="nav-link">About</a>
+        </div>
 
+    </main>
     
 </body>
 </html>
