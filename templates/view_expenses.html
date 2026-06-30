@@ -19,84 +19,95 @@
             {% endif %}
         {% endwith %}
 
-        <h2>Filter Expenses</h2>
+        <section class="filter-section">
+            <h2>Filter Expenses</h2>
 
-        <form action="/view-expenses" method="GET">
-            <label>Category:</label>
-            <input type="text" name="category" value="{{ category }}">
+            <form action="/view-expenses" method="GET" class="filter-form">
+                <div class="form-group">
+                    <label for="filter_category">Category:</label>
+                    <input type="text" id="filter_category" name="category" value="{{ category }}">
+                </div>
 
-            <br><br>
+                <div class="form-group">
+                    <label for="filter_search">Expense Name:</label>
+                    <input type="text" id="filter_search" name="search" value="{{ search }}">
+                </div>
 
-            <label>Expense Name:</label>
-            <input type="text" name="search" value="{{ search }}">
+                <div class="form-group">
+                    <label for="filter_month">Month:</label>
+                    <input type="month" id="filter_month" name="month" value="{{ month }}">
+                </div>
 
-            <br><br>
+                <div class="form-group">
+                    <label for="filter_sort">Sort expenses:</label>
+                    <select id="filter_sort" name="sort">
+                        <option value="">No sorting</option>
 
-            <label>Month:</label>
-            <input type="month" name="month" value=" {{ month }}">
+                        <option value="cost_asc"
+                            {% if sort == "cost_asc" %}selected{% endif %}>
+                            Lowest to Highest
+                        </option>
 
-            <br><br>
+                        <option value="cost_desc"
+                            {% if sort == "cost_desc" %}selected{% endif %}>
+                            Highest to Lowest
+                        </option>
 
-            <label>Sort expenses:</label>
-            <select name="sort">
-                <option value="">No sorting</option>
+                        <option value="date_asc"
+                            {% if sort == "date_asc" %}selected{% endif %}>
+                            Oldest to Newest
+                        </option>
 
-                <option value="cost_asc"
-                    {% if sort == "cost_asc" %}selected{% endif %}>
-                    Lowest to Highest
-                </option>
+                        <option value="date_desc"
+                            {% if sort == "date_desc"%}selected{% endif %}>
+                            Newest to Oldest
+                        </option>
+                    </select>
+                </div>
 
-                <option value="cost_desc"
-                    {% if sort == "cost_desc" %}selected{% endif %}>
-                    Highest to Lowest
-                </option>
+                <div class="filter-actions">
+                    <button type="submit" class="primary-button">Apply</button>
+                    <a href="/view-expenses">Clear Filters</a>
+                </div>
+            </form>
+        </section>
 
-                <option value="date_asc"
-                {% if sort == "date_asc" %}selected{% endif %}>
-                Oldest to Newest
-                </option>
-
-                <option value="date_desc"
-                    {% if sort == "cost_desc"%}selected{% endif %}>
-                    Newest to Oldest
-                </option>
-            </select>
-
-            <br><br>
-
-            <button type="submit">Apply</button>
-        </form>
-
-        <br>
-
-        <a href="/view-expenses">Clear Filters</a>
-
-        <br>
-
+        
+        
         {% if expenses %}
-            {% for expense in expenses %}
-                <p>
-                    ID: {{ expense[0] }} |
-                    Name: {{ expense[1] }} |
-                    Cost: ${{ "%.2f"|format(expense[2]) }} |
-                    Category: {{ expense[3] }} |
-                    Date: {{ expense[4] }}
-                </p>
+            <div class="expense-list">
+                {% for expense in expenses %}
+                    <article class="expense-card">
+                        <div class="expense-details">
+                            <h3>{{ expense[1] }}</h3>
 
-                <a href="/edit-expense/{{ expense[0] }}">Edit</a>
+                            <p><strong>Cost:</strong> ${{ "%.2f"|format(expense[2]) }}</p>
+                            <p><strong>Category:</strong> {{ expense[3] }}</p>
+                            <p><strong>Date:</strong> {{ expense[4] }}</p>
+                        </div>
 
-                <br><br>
+                        <div class="expense-actions">
+                            <a
+                                href="/edit-expense/{{ expense[0] }}"
+                                class="edit-link"
+                            >
+                                Edit
+                            </a>
 
-                <form action="/delete-expense/{{ expense[0] }}" method="POST"
-                    action="/delete-expense/{{ expense[0] }}"
-                    method="POST"
-                    onsubmit="return confirm('Are you sure you want to delete this expense?');"
-                    >
+                            <form
+                                action="/delete-expense/{{ expense[0] }}"
+                                method="POST"
+                                onsubmit="return confirm('Are you sure you want to delete this expense?');"
+                            >
+                                <button type="submit" class="delete-button">Delete</button>
+                            </form>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
 
-                    <button type="submit">Delete</button>
-                </form>
-            {% endfor %}
         {% else %}
+
                 <p>No expenses found.</p>
         
         {% endif %}
@@ -114,7 +125,7 @@
         {% endfor %}
         <br>
 
-        <h2> Spending by Month</h2>
+        <h2>Spending by Month</h2>
 
         {% for monthly_total in monthly_totals %}
             <p>
