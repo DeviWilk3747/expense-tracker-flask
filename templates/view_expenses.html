@@ -14,7 +14,7 @@
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 {% for message in messages %}
-                    <p>{{ message }}</p>
+                    <p class="success-message">{{ message }}</p>
                 {% endfor %}
             {% endif %}
         {% endwith %}
@@ -67,7 +67,7 @@
 
                 <div class="filter-actions">
                     <button type="submit" class="primary-button">Apply</button>
-                    <a href="/view-expenses">Clear Filters</a>
+                    <a href="/view-expenses" class="secondary-link">Clear Filters</a>
                 </div>
             </form>
         </section>
@@ -108,7 +108,7 @@
 
         {% else %}
 
-                <p>No expenses found.</p>
+                <p class="no-results-message">No expenses found.</p>
         
         {% endif %}
         
@@ -139,9 +139,6 @@
         <a href="/">Back to Home</a>
 
         <br><br>
-
-        <a href="/view-expenses">Back to View Expenses</a>
-
     </main>
 </body>
 

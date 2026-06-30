@@ -169,6 +169,34 @@ body{
     background-color: rgb(170, 0, 0);
 }
 
+.success-message{
+    padding: 15px;
+    border: 1px solid green;
+    background-color: lightgreen;
+    color: darkgreen;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.error-message{
+    padding: 15px;
+    border: 1px solid red;
+    background-color: lightcoral;
+    color: darkred;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.no-results-message {
+    padding: 15px;
+    background-color: lightyellow;
+    color: #665500;
+    border: 1px solid goldenrod;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+
 @media (max-width: 768px) {
     .container {
         margin: 20px 15px;
