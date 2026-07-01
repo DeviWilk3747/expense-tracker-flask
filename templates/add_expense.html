@@ -1,70 +1,65 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Add Expense</title> 
-    
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
+{% extends "base.html" %}
 
-<body>
-    
-    <main class="container">
-        <h1>Add Expense</h1>
+{% block title %}
+    Add Expense
+{% endblock %}
+
+{% block content %}
+
+<h1>Add Expense</h1>
         
-            {% if error %}
-                <p class="error-message">{{ error }}</p>
-            {% endif %}
+    {% if error %}
+        <p class="error-message">{{ error }}</p>
+    {% endif %}
 
-        <form action="/add-expense" method="POST">
-            <div class="form-group">
-                <label for="expense_name">Expense Name:</label>
-                <input
-                    type="text"
-                    id="expense_name"
-                    name="expense_name"
-                    required
-                >
-            </div>
+    <form action="/add-expense" method="POST">
+        <div class="form-group">
+            <label for="expense_name">Expense Name:</label>
+            <input
+                type="text"
+                id="expense_name"
+                name="expense_name"
+                required
+            >
+        </div>
 
-            <div class="form-group">
-                <label for="cost">Cost:</label>
-                <input
-                    type="number"
-                    id="cost"
-                    name="cost"
-                    step="0.01"
-                    min="0.01"
-                    required
-                >
-            </div>
+        <div class="form-group">
+            <label for="cost">Cost:</label>
+            <input
+                type="number"
+                id="cost"
+                name="cost"
+                step="0.01"
+                min="0.01"
+                required
+            >
+        </div>
 
-            <div class="form-group">
-                <label for="category">Category:</label>
-                <input
-                    type="text"
-                    id="category"
-                    name="category"
-                    required
-                >
-            </div>
+        <div class="form-group">
+            <label for="category">Category:</label>
+            <input
+                type="text"
+                id="category"
+                name="category"
+                required
+            >
+        </div>
 
-            <div class="form-group">
-                <label for="date">Date:</label>
-                <input
-                    type="date"
-                    id="date"
-                    name="date"
-                    required
-                >
-            </div>
+        <div class="form-group">
+            <label for="date">Date:</label>
+            <input
+                type="date"
+                id="date"
+                name="date"
+                required
+            >
+        </div>
 
-            <button type="submit" class="primary-button">Add Expense</button>
-        </form>
+        <button type="submit" class="primary-button">Add Expense</button>
+    </form>
 
-        <br>
+    <br>
 
-        <a href="/">Back to home</a>
-    </main>
-    
-</body>
-</html>
+    <a href="/">Back to home</a>
+{% endblock %}
+
