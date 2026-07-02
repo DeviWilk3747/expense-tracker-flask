@@ -50,7 +50,7 @@ def home():
 # About page route
 @app.route("/about")
 def about():
-    return "About Page"
+    return render_template("about.html")
 
 # Add expense page route
 @app.route("/add-expense", methods=["GET", "POST"])
