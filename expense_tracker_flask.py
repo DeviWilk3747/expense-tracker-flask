@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash 
 import sqlite3
+import os
 
 connection = sqlite3.connect("expense_tracker.db", check_same_thread=False)
 cursor = connection.cursor()
@@ -40,7 +41,10 @@ create_table()
 # Create Flask application
 app = Flask(__name__)
 
-app.secret_key = "expense-tracker-secret-key"
+app.config["SECRET_KEY"] = os.environ.get(
+    "SECRET_KEY",
+    "development-secret-key"
+)
 
 # Home page route
 @app.route("/")
